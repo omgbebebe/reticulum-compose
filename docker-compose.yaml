@@ -1,6 +1,6 @@
 services:
   rnsd:
-    image: reticulum-clients:latest
+    image: ghcr.io/omgbebebe/reticulum-compose:latest
     build: .
     entrypoint: "start_rnsd.sh"
     tty: true
@@ -21,7 +21,7 @@ services:
       - ./data/config:/root/.reticulum/config
 
   meshchat:
-    image: reticulum-clients:latest
+    image: ghcr.io/omgbebebe/reticulum-compose:latest
     build: .
 #    profiles: ["client"]
     environment:
@@ -42,7 +42,7 @@ services:
       - ./data/config:/root/.reticulum/config
 
   rrcd:
-    image: reticulum-clients:latest
+    image: ghcr.io/omgbebebe/reticulum-compose:latest
     build: .
 #    profiles: ["srv"]
     environment:
@@ -62,7 +62,7 @@ services:
       - ./data/config:/root/.reticulum/config
 
   rrc-web:
-    image: reticulum-clients:latest
+    image: ghcr.io/omgbebebe/reticulum-compose:latest
     build: .
 #    profiles: ["client"]
     environment:
