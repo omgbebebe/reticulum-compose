@@ -1,0 +1,87 @@
+services:
+  rnsd:
+    image: reticulum-clients:latest
+    build: .
+    entrypoint: "start_rnsd.sh"
+    tty: true
+    healthcheck:
+      #test: ["CMD", "nc", "-z", "localhost", "37428"]
+      test: ["CMD-SHELL", "netstat -an | grep 37428 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "37428:37428"
+      - "37429:37429"
+    networks:
+      - rns_internal_net
+    volumes:
+      - ./data/rnsd:/root/.reticulum
+      - ./data/config:/root/.reticulum/config
+
+  meshchat:
+    image: reticulum-clients:latest
+    build: .
+#    profiles: ["client"]
+    environment:
+      - RNS_SHARED_INSTANCE_HOST=rnsd
+      - RNS_SHARED_INSTANCE_PORT=37428
+      - RNS_CONFIG_DIR=/root/.reticulum
+    entrypoint: ["start_meshchat.sh", "--host", "0.0.0.0"]
+    depends_on:
+      rnsd:
+        condition: service_healthy
+    ports:
+      - "8700:8000"
+    networks:
+      - rns_internal_net
+    volumes:
+      - ./data/meshchat:/root/.reticulum
+      - ./data/meshchat/app-storage:/opt/reticulum-meshchat/storage
+      - ./data/config:/root/.reticulum/config
+
+  rrcd:
+    image: reticulum-clients:latest
+    build: .
+#    profiles: ["srv"]
+    environment:
+      - RNS_SHARED_INSTANCE_HOST=rnsd
+      - RNS_SHARED_INSTANCE_PORT=37428
+      - RNS_CONFIG_DIR=/root/.reticulum
+    entrypoint: ["start_rrcd.sh"]
+    depends_on:
+      rnsd:
+        condition: service_healthy
+    ports:
+      - "8701:8000"
+    networks:
+      - rns_internal_net
+    volumes:
+      - ./data/rrcd:/root/.reticulum
+      - ./data/config:/root/.reticulum/config
+
+  rrc-web:
+    image: reticulum-clients:latest
+    build: .
+#    profiles: ["client"]
+    environment:
+      - RNS_SHARED_INSTANCE_HOST=rnsd
+      - RNS_SHARED_INSTANCE_PORT=37428
+      - RNS_CONFIG_DIR=/root/.reticulum
+    entrypoint: ["start_rrc-web.sh"]
+    depends_on:
+      rnsd:
+        condition: service_healthy
+    ports:
+      - "8702:8080"
+    networks:
+      - rns_internal_net
+    volumes:
+      - ./data/rrc-web-reticulum:/root/.reticulum
+      - ./data/config:/root/.reticulum/config
+      - ./data/rrc-web:/root/.rrc-web/
+
+networks:
+  rns_internal_net:
+    driver: bridge
