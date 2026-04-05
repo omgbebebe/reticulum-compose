@@ -77,4 +77,14 @@
     name = sarmesh
     selected_interface_mode = 1
     configured_bitrate = None
-
+  [[ret.forment.ru]]
+    type = TCPClientInterface
+    interface_enabled = True
+    target_host = ret.forment.ru
+    target_port = 4242
+    i2p_tunneled = False
+    kiss_framing = False
+    name = sar_node1
+    selected_interface_mode = 1
+    configured_bitrate = None
+ 
