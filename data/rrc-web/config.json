@@ -1,0 +1,21 @@
+{
+  "identity_path": "/root/.rrc-web/identity",
+  "dest_name": "rrc.hub",
+  "hub_hash": "facae8532dca6428de80bc3c3d0fc381",
+  "nickname": "omg",
+  "configdir": null,
+  "server_port": 8080,
+  "server_host": "0.0.0.0",
+  "auto_join_room": "",
+  "theme": "dark",
+  "enable_auth": false,
+  "auth_token": "",
+  "enable_ssl": false,
+  "ssl_cert_path": "/root/.rrc-web/cert.pem",
+  "ssl_key_path": "/root/.rrc-web/key.pem",
+  "session_timeout_minutes": 60,
+  "allowed_origins": [
+    "http://localhost:8702"
+  ],
+  "enable_security_headers": true
+}
