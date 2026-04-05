@@ -1,3 +1,18 @@
+# Build the frontend
+FROM node:20-bookworm-slim AS build-frontend
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*i
+
+RUN cd /opt && \
+  git clone --depth=1 https://github.com/omgbebebe/reticulum-meshchat && \
+  cd reticulum-meshchat && \
+  npm install --omit=dev && \
+  npm run build-frontend
+
 FROM debian:13
 
 LABEL maintainer="omgbebebe@gmail.com"
@@ -6,7 +21,6 @@ RUN apt-get update && apt-get install -y \
     iproute2 \
     net-tools \
     git \
-    nodejs npm \
     python3 \
     python3-pip \
     python3-venv \
@@ -41,9 +55,8 @@ RUN cd /opt && \
   git clone --depth=1 https://github.com/omgbebebe/reticulum-meshchat && \
   cd reticulum-meshchat && \
   python3 -m venv .venv && . .venv/bin/activate && \
-  npm install --omit=dev && \
-  npm run build-frontend && \
   pip install -r requirements.txt
+COPY --from=build-frontend /opt/reticulum-meshchat/public /opt/reticulum-meshchat/public
 
 COPY start_rnsd.sh /usr/local/bin/
 COPY start_meshchat.sh /usr/local/bin/
