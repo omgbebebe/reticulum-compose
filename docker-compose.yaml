@@ -1,6 +1,6 @@
 services:
   rnsd:
-    image: ghcr.io/omgbebebe/reticulum-compose:latest
+    image: ${RC_IMAGE}:${RC_TAG}
     build: .
     entrypoint: "start_rnsd.sh"
     tty: true
@@ -19,9 +19,16 @@ services:
     volumes:
       - ./data/rnsd:/root/.reticulum
       - ./data/config:/root/.reticulum/config
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+
 
   meshchat:
-    image: ghcr.io/omgbebebe/reticulum-compose:latest
+    image: ${RC_IMAGE}:${RC_TAG}
     build: .
 #    profiles: ["client"]
     environment:
@@ -40,9 +47,15 @@ services:
       - ./data/meshchat:/root/.reticulum
       - ./data/meshchat/app-storage:/opt/reticulum-meshchat/storage
       - ./data/config:/root/.reticulum/config
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 120s
 
   rrcd:
-    image: ghcr.io/omgbebebe/reticulum-compose:latest
+    image: ${RC_IMAGE}:${RC_TAG}
     build: .
 #    profiles: ["srv"]
     environment:
@@ -60,9 +73,16 @@ services:
     volumes:
       - ./data/rrcd:/root/.reticulum
       - ./data/config:/root/.reticulum/config
+      - ./data/rrcd-config:/root/.rrcd
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 120s
 
   rrc-web:
-    image: ghcr.io/omgbebebe/reticulum-compose:latest
+    image: ${RC_IMAGE}:${RC_TAG}
     build: .
 #    profiles: ["client"]
     environment:
@@ -81,6 +101,12 @@ services:
       - ./data/rrc-web-reticulum:/root/.reticulum
       - ./data/config:/root/.reticulum/config
       - ./data/rrc-web:/root/.rrc-web/
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 120s
 
 networks:
   rns_internal_net:
