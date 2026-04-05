@@ -1,0 +1,109 @@
+# rrcd configuration (TOML)
+#
+# This file was created on first run.
+# Edit it, then start rrcd again.
+
+[hub]
+
+# Optional: Reticulum configuration directory.
+# If left unset, Reticulum will choose its default (usually ~/.reticulum).
+configdir = ""
+
+# Where rrcd stores its persistent identity (Reticulum Identity file).
+identity_path = '/root/.rrcd/hub_identity'
+
+# Separate room registry file (registered rooms, topics, modes, bans, etc).
+# This file is maintained by rrcd. You can edit it manually, but keep it valid TOML.
+# A running hub can reload both rrcd.toml and rooms.toml with the /reload command.
+room_registry_path = '/root/.rrcd/rooms.toml'
+
+# Destination name to host the hub on.
+dest_name = "sarmesh.rrc.hub"
+
+# Announcing (Reticulum destination announces)
+#
+# announce_on_start: send a single announce right after startup.
+# announce_period_s: if >0, periodically re-announce.
+# To disable announcing entirely, set:
+#   announce_on_start = false
+#   announce_period_s = 0.0
+announce_on_start = true
+announce_period_s = 60.0
+
+# Hub identity fields.
+hub_name = "rrc"
+greeting = "Welcome to the Sarmesh RRC service"
+
+# Note: The hub 'greeting' is the MOTD (message of the day) delivered after WELCOME.
+# If it exceeds the link MTU, it will be sent via RNS.Resource for reliable transfer.
+
+# Operator / moderation
+#
+# trusted_identities: list of Reticulum Identity hashes (hex) allowed to run
+# operator commands.
+# banned_identities: list of Identity hashes (hex) that will be disconnected.
+trusted_identities = []
+banned_identities = []
+
+# Registered-room pruning.
+# Only applies to registered rooms with no connected members.
+room_registry_prune_after_s = 2592000
+room_registry_prune_interval_s = 3600.0
+
+# Keyed-room invites.
+# Room operators can use /invite to let a user join a +k room without the key.
+# Invites are removed on join or after this timeout.
+room_invite_timeout_s = 900.0
+
+# Optional behaviors.
+include_joined_member_list = false
+
+# Limits.
+# These limits help mitigate abuse and resource exhaustion, but can be adjusted
+# based on your use case.
+#
+# N.B. max_msg_body_bytes should not allow messages so large that they cannot
+# fit within the link MTU after UTF-8 encoding and envelope overhead. The
+# default of 350 bytes is a safe choice for the default Reticulum MTU of 500.
+max_nick_bytes = 32
+max_room_name_bytes = 64
+max_msg_body_bytes = 350
+max_rooms_per_session = 32
+rate_limit_msgs_per_minute = 240
+
+# Hub-initiated liveness checks (0 disables).
+ping_interval_s = 0.0
+ping_timeout_s = 0.0
+
+# Large payload transfer via RNS.Resource
+#
+# When a message exceeds the link MTU, rrcd can use RNS.Resource for reliable
+# transfer instead of manual chunking. A small RESOURCE_ENVELOPE is sent first,
+# followed by the payload as an RNS.Resource.
+#
+# enable_resource_transfer: enable/disable feature (default: true)
+# max_resource_bytes: maximum size for a single resource (default: 256 KiB)
+# max_pending_resource_expectations: max pending expectations per link (default: 8)
+# resource_expectation_ttl_s: how long to wait for announced resource (default: 30s)
+enable_resource_transfer = true
+max_resource_bytes = 262144
+max_pending_resource_expectations = 8
+resource_expectation_ttl_s = 30.0
+
+[logging]
+
+# Log level for rrcd itself.
+level = "INFO"
+
+# Log level for Reticulum/RNS Python logging (if used by your install).
+rns_level = "WARNING"
+
+# Log to stderr (systemd/journald friendly).
+console = true
+
+# Optional file path for logs (leave empty to disable).
+file = ""
+
+# Log format and optional date format.
+format = "%(asctime)s %(levelname)s %(name)s[%(threadName)s]: %(message)s"
+datefmt = ""
