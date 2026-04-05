@@ -26,8 +26,7 @@ RUN cd /opt && \
   python3 -m venv .venv && . .venv/bin/activate && \
   python -m pip install lxmf && \
   python -m pip install . && \
-  python -m pip install -e . && \
-  python -m rrcd
+  python -m pip install -e .
 
 # install rrc webUI
 RUN cd /opt && \
